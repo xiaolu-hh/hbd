@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>生日惊喜-登录</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"微软雅黑",sans-serif;}
+body{
+    width:100vw;height:50vh;
+    /* 替换成图片背景 */
+    background: url("bg.jpg") no-repeat center center;
+    background-size: cover;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+}
+.login-box{
+	text-align:center;padding:40px;
+	background:rgba(255,255,255,0.6);
+	border-radius:20px;box-shadow:0 0 25px rgba(255,121,168,0.4);
+}
+.login-title{font-size:30px;color:#d6336c;margin-bottom:25px;}
+.pwd-input{
+	width:220px;height:45px;padding:0 15px;
+	border:2px solid #ff94b3;border-radius:10px;
+	font-size:18px;outline:none;margin-bottom:20px;
+}
+.submit-btn{
+	padding:12px 35px;background:#ff79a8;color:#fff;
+	border:none;border-radius:30px;font-size:17px;cursor:pointer;
+}
+.err-tip{color:red;margin-top:15px;font-size:15px;display:none;}
+</style>
+</head>
+<body>
+<div class="login-box">
+  <h2 class="login-title">输入专属密码进入惊喜</h2>
+  <input type="password" class="pwd-input" id="pwd" placeholder="请输入密码">
+  <br><br>
+  <button class="submit-btn" onclick="checkPwd()">确认解锁</button>
+  <p class="err-tip" id="err">不是吧，这都错</p >
+</div>
+
+<script>
+const pwdTrue = "20050606";
+function checkPwd(){
+	let val = document.getElementById("pwd").value;
+	if(val === pwdTrue){
+		location.href = "game1.html";
+	}else{
+		document.getElementById("err").style.display = "block";
+	}
+}
+</script>
+</body>
+</html>
