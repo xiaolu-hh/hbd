@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>答题正确</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"微软雅黑",sans-serif;}
+body{
+    width:100vw;height:50vh;
+    /* 替换成图片背景 */
+    background: url("bg.jpg") no-repeat center center;
+    background-size: cover;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+}
+.success-text{font-size:32px;color:#d6336c;margin-bottom:30px;}
+.card{
+	width:300px;height:170px;background:#fff;border-radius:12px;
+	padding:15px;box-shadow:0 4px 15px rgba(255,121,168,0.5);
+	display:flex;align-items:center;justify-content:center;
+	margin-bottom:30px;color:#d6336c;font-size:16px;
+}
+.next-btn{
+	padding:12px 35px;background:#ff79a8;color:#fff;
+	border:none;border-radius:30px;font-size:17px;cursor:pointer;
+}
+</style>
+</head>
+<body>
+<p class="success-text">恭喜玩家获得第二块碎片</p >
+<div class="card">山山巍然<br>祝你长青不晦</div>
+<button class="next-btn" onclick="location.href='game7.html'">前往第三关</button>
+</body>
+</html>

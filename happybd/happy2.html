@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合成甜蜜蛋糕</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei",sans-serif;
+        }
+        body{
+            background: linear-gradient(145deg,#ffe6ef,#fff0f8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            min-height: 100vh;
+        }
+        .title{
+            font-size: 26px;
+            color: #c84b80;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .info-bar{
+            display: flex;
+            gap: 30px;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        #cakeCanvas{
+            border: 3px solid #f8b8d2;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 6px 20px rgba(200,75,128,0.15);
+        }
+        .tip-text{
+            margin-top: 15px;
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h2 class="title">合成专属甜蜜蛋糕</h2>
+    <div class="info-bar">
+        <span>当前分数：<span id="cakeScore">0</span></span>
+        <span>当前等级：<span id="cakeLevel">小纸杯蛋糕</span></span>
+    </div>
+    <canvas id="cakeCanvas" width="340" height="520"></canvas>
+    <p class="tip-text">鼠标移动控制落点，点击下落，合成终极蛋糕即可开启最终祝福</p >
+
+    <script>
+        const canvas = document.getElementById('cakeCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDom = document.getElementById('cakeScore');
+        const levelDom = document.getElementById('cakeLevel');
+
+        // 蛋糕等级配置，满级合成后跳转最终页
+        const cakeList = [
+            {r:22, icon:'🧁', name:'小纸杯蛋糕'},
+            {r:28, icon:'🍰', name:'奶油小蛋糕'},
+            {r:34, icon:'🎂', name:'水果夹心蛋糕'},
+            {r:40, icon:'✨', name:'轻奢花式蛋糕'},
+            {r:48, icon:'💝', name:'豪华终极蛋糕'}
+        ];
+
+        let cakeArr = [];
+        let currentCake = null;
+        let score = 0;
+        let maxLv = 0;
+        let gameOver = false;
+        const gravity = 0.26;
+        let jumpFlag = false;
+
+        // 随机生成初始蛋糕等级
+        function randomCake(){
+            return Math.floor(Math.random() * 3);
+        }
+
+        // 创建蛋糕实体
+        function createCake(lv,x,y){
+            return {
+                x: x || canvas.width / 2,
+                y: y || 35,
+                r: cakeList[lv].r,
+                lv: lv,
+                vy: 0,
+                drop: false
+            }
+        }
+
+        // 初始化游戏：开局固定错开点位，初始不重叠，下落可堆叠
+        function initGame(){
+            cakeArr = [];
+            score = 0;
+            maxLv = 0;
+            gameOver = false;
+            jumpFlag = false;
+
+            // 初始点位宽松排布，天生不重叠
+            let initPos = [
+                [45, 425],
+                [125, 375],
+                [205, 415],
+                [85, 325],
+                [255, 365],
+                [165, 285]
+            ];
+            
+            initPos.forEach(pos=>{
+                let lv = randomCake();
+                cakeArr.push(createCake(lv, pos[0], pos[1]));
+                if(lv > maxLv) maxLv = lv;
+            })
+
+            currentCake = createCake(randomCake());
+            updateInfo();
+        }
+
+        // 更新页面信息
+        function updateInfo(){
+            scoreDom.innerText = score;
+            levelDom.innerText = cakeList[maxLv].name;
+        }
+
+        // 鼠标移动控制
+        canvas.addEventListener('mousemove', e => {
+            if(gameOver || currentCake.drop) return;
+            const rect = canvas.getBoundingClientRect();
+            currentCake.x = e.clientX - rect.left;
+            currentCake.x = Math.max(currentCake.r, Math.min(canvas.width - currentCake.r, currentCake.x));
+        })
+
+        // 点击下落
+        canvas.addEventListener('click', () => {
+            if(gameOver || currentCake.drop) return;
+            currentCake.drop = true;
+        })
+
+        // 计算两点距离
+        function getDistance(a,b){
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            return Math.sqrt(dx*dx + dy*dy);
+        }
+
+        // 蛋糕合成逻辑
+        function mergeCake(){
+            for(let i = 0; i < cakeArr.length; i++){
+                for(let j = i + 1; j < cakeArr.length; j++){
+                    let a = cakeArr[i];
+                    let b = cakeArr[j];
+                    if(a.lv === b.lv && getDistance(a,b) < a.r + b.r - 6){
+                        let newLv = a.lv + 1;
+                        // 合成满级蛋糕，触发跳转
+                        if(newLv >= cakeList.length - 1){
+                            jumpFlag = true;
+                        }
+                        newLv = Math.min(newLv, cakeList.length - 1);
+                        cakeArr.splice(j,1);
+                        cakeArr.splice(i,1);
+                        cakeArr.push({
+                            x: (a.x + b.x) / 2,
+                            y: (a.y + b.y) / 2,
+                            r: cakeList[newLv].r,
+                            lv: newLv,
+                            vy: 0
+                        });
+                        score += newLv * 20;
+                        if(newLv > maxLv) maxLv = maxLv = newLv;
+                        updateInfo();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // 物理运动更新，允许下落堆叠
+        function physicsUpdate(){
+            if(gameOver) return;
+
+            // 检测满级合成，跳转最终页面
+            if(jumpFlag){
+                setTimeout(()=>{
+                    window.location.href = "game8.html";
+                },800);
+            }
+
+            // 当前蛋糕下落
+            if(currentCake.drop){
+                currentCake.vy += gravity;
+                currentCake.y += currentCake.vy;
+                if(currentCake.y + currentCake.r >= canvas.height){
+                    currentCake.y = canvas.height - currentCake.r;
+                    cakeArr.push(currentCake);
+                    currentCake = createCake(randomCake());
+                }
+            }
+
+            // 场内蛋糕下落堆叠，底部停靠
+            cakeArr.forEach(item => {
+                item.vy += gravity;
+                item.y += item.vy;
+                if(item.y + item.r >= canvas.height){
+                    item.y = canvas.height - item.r;
+                    item.vy = 0;
+                }
+            })
+
+            // 多次合并防止卡顿
+            for(let i = 0; i < 5; i++){
+                mergeCake();
+            }
+
+            // 堆叠溢出游戏结束
+            cakeArr.forEach(item => {
+                if(item.y - item.r <= 12){
+                    gameOver = true;
+                    alert("蛋糕堆太高啦，重新再来一次吧~");
+                    initGame();
+                }
+            })
+        }
+
+        // 绘制蛋糕
+        function drawCake(item){
+            ctx.font = `${item.r * 1.5}px sans-serif`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(cakeList[item.lv].icon, item.x, item.y);
+        }
+
+        // 渲染画面
+        function render(){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            if(!gameOver && currentCake){
+                drawCake(currentCake);
+            }
+            cakeArr.forEach(drawCake);
+        }
+
+        // 游戏循环
+        function gameLoop(){
+            physicsUpdate();
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        initGame();
+        gameLoop();
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>温馨提示轰炸</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+        .tip-window {
+            position: absolute;
+            width: 300px;
+            height: 80px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "微软雅黑", sans-serif;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 9999;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 配置参数
+        const TOTAL_WINDOWS = 600;
+        const SHOW_DURATION = 10000; // 10秒后自动关闭
+        const TIPS = [
+            '考研一战上岸', '顺利上岸', '一次成功',
+            '答辩轻松通过', '绩点稳居前列', '奖学金轻松拿',
+            '灵感爆发', '正确率超高', '勇往直前',
+            '健健康康', '学的都考', '无所不能',
+            '好好吃饭！', '别熬夜', '年薪百万',
+            '梦想成真', '保持好心情', '拥有传送门',
+            '天天开心', '你是最棒的', '一定会越来越好'
+        ];
+        const BG_COLORS = [
+            'lightpink', 'skyblue', 'lightgreen', 'lavender',
+            'lightyellow', 'plum', 'coral', 'bisque', 'aquamarine',
+            'mistyrose', 'honeydew', 'lavenderblush', 'oldlace',
+            'palegoldenrod', 'powderblue', 'rosybrown', 'seashell'
+        ];
+
+        // 生成单个弹窗
+        function createTipWindow(text, bgColor) {
+            const win = document.createElement('div');
+            win.className = 'tip-window';
+            win.textContent = text;
+            win.style.backgroundColor = bgColor;
+
+            // 随机位置（不超出屏幕）
+            const screenW = window.innerWidth;
+            const screenH = window.innerHeight;
+            const x = Math.floor(Math.random() * (screenW - 300));
+            const y = Math.floor(Math.random() * (screenH - 80));
+            win.style.left = `${x}px`;
+            win.style.top = `${y}px`;
+
+            document.body.appendChild(win);
+
+            // 10秒后自动关闭
+            setTimeout(() => {
+                win.remove();
+            }, SHOW_DURATION);
+
+            return win;
+        }
+
+        // 按0.005秒间隔批量生成弹窗（和Python逻辑一致）
+        async function spawnAllTips() {
+            for (let i = 0; i < TOTAL_WINDOWS; i++) {
+                const tip = TIPS[Math.floor(Math.random() * TIPS.length)];
+                const color = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
+                createTipWindow(tip, color);
+                await new Promise(resolve => setTimeout(resolve, 5)); // 对应time.sleep(0.005)
+            }
+        }
+
+        // 按空格键关闭所有弹窗（和Python逻辑一致）
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                document.querySelectorAll('.tip-window').forEach(win => win.remove());
+            }
+        });
+
+        // 启动！
+        spawnAllTips();
+    </script>
+</body>
+</html>

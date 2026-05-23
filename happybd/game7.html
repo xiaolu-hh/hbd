@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>第三关</title>
+    <style>
+        .title {
+            font-size: 28px;
+            color: #d6336c;
+            margin-bottom: 30px;
+        }
+        .desc {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 40px;
+        }
+        .input-area {
+            margin-bottom: 20px;
+        }
+        #answer-input {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            width: 200px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        #answer-input:focus {
+            border-color: #409eff;
+        }
+        .submit-btn {
+            padding: 12px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #409eff;
+            color: #fff;
+        }
+        .submit-btn:hover {
+            background: #337ecc;
+        }
+        .tip {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #ff4d4f;
+        }
+		body{
+    width:100vw;height:50vh;
+    /* 替换成图片背景 */
+    background: url("bg.jpg") no-repeat center center;
+    background-size: cover;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+}
+    </style>
+</head>
+<body>
+    <h2 class="title">第三关：这是我们认识的第几年！</h2>
+    <p class="desc">请输入正确的年份，答对即可通关~</p >
+
+    <div class="input-area">
+        <input type="text" id="answer-input" placeholder="请输入答案（数字）">
+    </div>
+    <button class="submit-btn" onclick="checkAnswer()">提交答案</button>
+    <p class="tip" id="tip-text"></p >
+
+    <script>
+        // 这里改成你的正确答案，比如认识第3年就写 3
+        const CORRECT_ANSWER = "6"; 
+
+        function checkAnswer() {
+            const input = document.getElementById('answer-input').value.trim();
+            const tip = document.getElementById('tip-text');
+
+            if (input === CORRECT_ANSWER) {
+                tip.style.color = '#52c41a';
+                tip.textContent = '答对啦！正在跳转下一关...';
+                // 答对了跳转到 game8.html
+                setTimeout(() => {
+                    location.href = 'happy2.html';
+                }, 800);
+            } else {
+                tip.style.color = '#ff4d4f';
+                tip.textContent = '答错啦，再想想哦~';
+                // 清空输入框
+                document.getElementById('answer-input').value = '';
+            }
+        }
+    </script>
+</body>
+</html>

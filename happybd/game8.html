@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>全部通关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"微软雅黑",sans-serif;}
+body{
+    width:100vw;height:50vh;
+    /* 替换成图片背景 */
+    background: url("bg.jpg") no-repeat center center;
+    background-size: cover;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+}
+.success-text{font-size:32px;color:#d6336c;margin-bottom:30px;}
+.card{
+	width:300px;height:170px;background:#fff;border-radius:12px;
+	padding:15px;box-shadow:0 4px 15px rgba(255,121,168,0.5);
+	display:flex;align-items:center;justify-content:center;
+	margin-bottom:30px;color:#d6336c;font-size:16px;
+}
+.cake{font-size:200px;margin:100px 0;animation:bounce 1s infinite alternate;}
+@keyframes bounce{0%{transform:translateY(0);}100%{transform:translateY(-20px);}}
+.finish-btn{
+	padding:12px 35px;background:#ff79a8;color:#fff;
+	border:none;border-radius:30px;font-size:17px;cursor:pointer;
+}
+</style>
+</head>
+<body>
+<p class="success-text">全部通关！碎片集齐</p >
+<div class="card">
+人类比星星的数量更稀少
+从宇宙的角度来说
+你比星星更特别
+希望你快乐 不止生日
+是今天、明天、天天</div>
+<div class="cake">🎂</div>
+<button class="finish-btn" onclick="location.href='end.html'">查看最终祝福</button>
+</body>
+</html>
